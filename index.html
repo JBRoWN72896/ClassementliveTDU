@@ -294,7 +294,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="concours-hero">
       <div style="font-size:30px">🎯</div>
       <div class="concours-hero-title">Épreuve d'Adresse · Best Shooter Alive</div>
-      <div class="concours-hero-sub">Pause déjeuner · 13h10–13h30 · 1 représentant par équipe</div>
+      <div class="concours-hero-sub">Pause déjeuner · 13h15–13h45 · 1 représentant par équipe</div>
       <div class="concours-spots">
         <div class="concours-spots-title">PARCOURS · 7 SPOTS</div>
         <div class="spot-row"><div class="spot-num">1</div><div>Tir à 3 pts (0°) · 5 tentatives max — <em>départ chrono</em></div></div>
@@ -426,7 +426,11 @@ const ALL_TEAMS=[
   {id:'gend76',name:'Gendarmerie',  short:'GN', subtitle:'Seine-Maritime (76)'},
 ];
 const DEFAULT_POULES={A:['u76','gend76','ba105','u50'],B:['u27','police','u14']};
-const TIMES_A=['8h30','9h00','9h30','10h00','10h30','11h00'];
+// Terrain unique — matchs en séquence, créneau 30 min
+// Poule A (6 matchs) et Poule B (3 matchs) intercalés pour varier les équipes au repos
+// Ordre : A1, B1, A2, B2, A3, B3, A4, A5, A6
+// 8h30 → 8h30+8×30 = 12h30 fin des poules
+const TIMES_A=['8h30','9h30','10h30','11h30','12h00','12h30'];
 const TIMES_B=['9h00','10h00','11h00'];
 
 const FINALS_DEF=[
@@ -447,25 +451,31 @@ const FINALS_DEF=[
    t1_src:null, t2_src:null},
 ];
 
+// Planning terrain unique — 9 matchs de poule intercalés pour maximiser le repos
+// Ordre sur terrain : A1 · B1 · A2 · B2 · A3 · B3 · A4 · A5 · A6
+// Créneau 30 min / match (2×10 min + 3 min mi-temps + 5 min rotation/échauffement)
 const SCHEDULE=[
-  {time:'8h00', label:'Accueil des équipes',                   sub:'Gymnase Patrick Guillerme',                 cat:'pause'},
-  {time:'8h15', label:'Réunion capitaines & arbitres',         sub:'15 min',                                    cat:'pause'},
-  {time:'8h30', label:'Poule A — Match 1',                    sub:'2×10 min',                                  cat:'poule'},
-  {time:'9h00', label:'Poule A — Match 2 · Poule B — Match 1',sub:'Simultanés · 2×10 min',                     cat:'poule'},
-  {time:'9h30', label:'Poule A — Match 3',                    sub:'2×10 min',                                  cat:'poule'},
-  {time:'10h00',label:'Poule A — Match 4 · Poule B — Match 2',sub:'Simultanés · 2×10 min',                     cat:'poule'},
-  {time:'10h30',label:'Poule A — Match 5',                    sub:'2×10 min',                                  cat:'poule'},
-  {time:'11h00',label:'Poule A — Match 6 · Poule B — Match 3',sub:'Simultanés · 2×10 min',                     cat:'poule'},
-  {time:'11h30',label:'Fin des phases de poules',              sub:'Calcul des classements',                    cat:'pause'},
-  {time:'12h30',label:'Pause déjeuner — Équipes & Staff',      sub:'Espace restauration',                       cat:'pause'},
-  {time:'13h10',label:'🎯 Épreuve d\'adresse · Best Shooter Alive',sub:'1 représentant / équipe · fin ~13h30', cat:'concours'},
-  {time:'14h00',label:'Demi-finale 1',                         sub:'1er Poule A vs 2e Poule B · 2×10 min',    cat:'finale'},
-  {time:'14h30',label:'Demi-finale 2',                         sub:'1er Poule B vs 2e Poule A · 2×10 min',    cat:'finale'},
-  {time:'15h00',label:'Match 5e / 6e place',                   sub:'3e Poule A vs 3e Poule B · 2×10 min',     cat:'finale'},
-  {time:'15h30',label:'Petite Finale · 3e / 4e place',         sub:'Perdants demi-finales · 2×10 min',         cat:'finale'},
-  {time:'16h00',label:'⚜ Grande Finale',                      sub:'Vainqueurs demi-finales · 2×12 min',       cat:'cerem'},
-  {time:'16h35',label:'Remise des trophées & photos',          sub:'Cérémonie officielle',                      cat:'cerem'},
-  {time:'~16h55',label:'Fin de l\'événement',                 sub:'',                                          cat:'pause'},
+  {time:'8h00', label:'Accueil des équipes',                      sub:'Gymnase Patrick Guillerme',                       cat:'pause'},
+  {time:'8h15', label:'Réunion capitaines & arbitres',            sub:'Présentation des règles · ~15 min',               cat:'pause'},
+  {time:'8h30', label:'Poule A — Match 1',                       sub:'2×10 min · UDSP 76 vs Gendarmerie',               cat:'poule'},
+  {time:'9h00', label:'Poule B — Match 1',                       sub:'2×10 min · UDSP 27 vs Police Nat.',               cat:'poule'},
+  {time:'9h30', label:'Poule A — Match 2',                       sub:'2×10 min · UDSP 76 vs BA 105',                    cat:'poule'},
+  {time:'10h00',label:'Poule B — Match 2',                       sub:'2×10 min · UDSP 27 vs UDSP 14',                   cat:'poule'},
+  {time:'10h30',label:'Poule A — Match 3',                       sub:'2×10 min · UDSP 76 vs UDSP 50',                   cat:'poule'},
+  {time:'11h00',label:'Poule B — Match 3',                       sub:'2×10 min · Police Nat. vs UDSP 14',               cat:'poule'},
+  {time:'11h30',label:'Poule A — Match 4',                       sub:'2×10 min · Gendarmerie vs BA 105',                cat:'poule'},
+  {time:'12h00',label:'Poule A — Match 5',                       sub:'2×10 min · Gendarmerie vs UDSP 50',               cat:'poule'},
+  {time:'12h30',label:'Poule A — Match 6',                       sub:'2×10 min · BA 105 vs UDSP 50',                    cat:'poule'},
+  {time:'13h00',label:'Fin des phases de poules',                 sub:'Calcul des classements finaux',                   cat:'pause'},
+  {time:'13h00',label:'Pause déjeuner — Équipes & Staff',         sub:'Espace restauration',                             cat:'pause'},
+  {time:'13h15',label:'🎯 Épreuve d\'adresse · Best Shooter Alive',sub:'1 représentant / équipe · fin ~13h45',          cat:'concours'},
+  {time:'14h00',label:'Demi-finale 1',                            sub:'1er Poule A vs 2e Poule B · 2×10 min',           cat:'finale'},
+  {time:'14h30',label:'Demi-finale 2',                            sub:'1er Poule B vs 2e Poule A · 2×10 min',           cat:'finale'},
+  {time:'15h00',label:'Match 5e / 6e place',                      sub:'3e Poule A vs 3e Poule B · 2×10 min',            cat:'finale'},
+  {time:'15h30',label:'Petite Finale · 3e / 4e place',            sub:'Perdants demi-finales · 2×10 min',               cat:'finale'},
+  {time:'16h00',label:'⚜ Grande Finale',                         sub:'Vainqueurs demi-finales · 2×12 min',             cat:'cerem'},
+  {time:'16h40',label:'Remise des trophées & photos',             sub:'Cérémonie officielle',                            cat:'cerem'},
+  {time:'~17h00',label:'Fin de l\'événement',                    sub:'',                                                 cat:'pause'},
 ];
 
 const PALMARES_PLACES=[
